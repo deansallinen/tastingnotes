@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import Notes from './notesList'
 
 class UserSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        users: [],
+      users: [],
       user: null, 
       value: "",
       isLoading: false,
@@ -25,7 +26,7 @@ class UserSelect extends Component {
 
   handleSubmit(event) {
     this.setState({isLoading: true})
-    axios.get(`http://penguin.linux.test:3001/v1/users?id=${this.state.value}`)
+    axios.get(`http://penguin.linux.test:3001/v1/users/${this.state.value}`)
       .then(res => {
         // console.log(res);
         this.setState({user: res.data, error: null, isLoading: false})
@@ -37,7 +38,7 @@ class UserSelect extends Component {
   }
 
   componentDidMount() {
-    axios.get(`http://penguin.linux.test:3001/v1/users/all`)
+    axios.get(`http://penguin.linux.test:3001/v1/users/`)
     .then(res => this.setState({users: res.data}))
     .catch(error => {
         console.error(error)
@@ -55,7 +56,7 @@ class UserSelect extends Component {
 
         <select value={this.state.value} onChange={this.handleChange}>
             {this.state.users.map(user => {
-                return <option value={user.id}>{user.name}</option>
+                return <option value={user.id} key={user.id}>{user.name}</option>
             })}
         </select>
         </label>
@@ -64,15 +65,12 @@ class UserSelect extends Component {
         </form>
 
         {!!this.state.isLoading && <p>Loading...</p> }
-        {!!this.state.user && <p>{this.state.user.name}</p> }
+        {!!this.state.user && <div>
+          <p>{this.state.user.name}</p> 
+          <Notes userID={this.state.user.id} />
+        </div>}
         {!!this.state.error && <p>{this.state.error.message}</p>}
-        {/* <form onSubmit={this.handleSubmit}>
-          <label>
-            User ID: 
-            <input type='text' value={this.state.value} onChange={this.handleChange}></input>
-          </label>
-          <input type='submit' value='Submit'></input>
-        </form> */}
+        
         </header>
       </div>
     );
