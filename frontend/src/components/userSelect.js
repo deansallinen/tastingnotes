@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import Notes from './notesList'
+
 
 class UserSelect extends Component {
   constructor(props) {
@@ -16,12 +16,9 @@ class UserSelect extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  // handleChange(event) {
-  //   this.setState({value: event.target.value});
-  // }
-
   handleChange(event) {
-    this.setState({value: event.target.value});
+    // this.setState({value: event.target.value});
+    this.props.onUserSelect(event.target.value)
   }
 
   handleSubmit(event) {
@@ -37,25 +34,25 @@ class UserSelect extends Component {
     event.preventDefault();
   }
 
-  componentDidMount() {
-    axios.get(`http://penguin.linux.test:3001/v1/users/`)
-    .then(res => this.setState({users: res.data}))
-    .catch(error => {
-        console.error(error)
-        this.setState({error})
-      })
-  }
+  // componentDidMount() {
+  //   axios.get(`http://penguin.linux.test:3001/v1/users/`)
+  //   .then(res => this.setState({users: res.data}))
+  //   .catch(error => {
+  //       console.error(error)
+  //       this.setState({error})
+  //     })
+  // }
 
   render() {
     // console.log(this.state.user)
+    const user = this.props.user
     return (
-      <div className="App">
-        <header className="App-header">
+      <div>
         <form onSubmit={this.handleSubmit}>
         <label>Select user:
 
-        <select value={this.state.value} onChange={this.handleChange}>
-            {this.state.users.map(user => {
+        <select value={user} onChange={this.handleChange}>
+            {this.props.users.map(user => {
                 return <option value={user.id} key={user.id}>{user.name}</option>
             })}
         </select>
@@ -64,14 +61,7 @@ class UserSelect extends Component {
         <input type='submit' value='Submit'></input>
         </form>
 
-        {!!this.state.isLoading && <p>Loading...</p> }
-        {!!this.state.user && <div>
-          <p>{this.state.user.name}</p> 
-          <Notes userID={this.state.user.id} />
-        </div>}
-        {!!this.state.error && <p>{this.state.error.message}</p>}
-        
-        </header>
+
       </div>
     );
   }
