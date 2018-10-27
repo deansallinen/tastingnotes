@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios'
+// import axios from 'axios'
 
 
 class UserSelect extends Component {
@@ -13,7 +13,7 @@ class UserSelect extends Component {
       error: null};
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
@@ -21,18 +21,18 @@ class UserSelect extends Component {
     this.props.onUserSelect(event.target.value)
   }
 
-  handleSubmit(event) {
-    this.setState({isLoading: true})
-    axios.get(`http://penguin.linux.test:3001/v1/users/${this.state.value}`)
-      .then(res => {
-        // console.log(res);
-        this.setState({user: res.data, error: null, isLoading: false})
-      }).catch(error => {
-        console.error(error)
-        this.setState({error, isLoading: false, user: null})
-      })
-    event.preventDefault();
-  }
+  // handleSubmit(event) {
+  //   this.setState({isLoading: true})
+  //   axios.get(`http://penguin.linux.test:3001/v1/users/${this.state.value}`)
+  //     .then(res => {
+  //       // console.log(res);
+  //       this.setState({user: res.data, error: null, isLoading: false})
+  //     }).catch(error => {
+  //       console.error(error)
+  //       this.setState({error, isLoading: false, user: null})
+  //     })
+  //   event.preventDefault();
+  // }
 
   // componentDidMount() {
   //   axios.get(`http://penguin.linux.test:3001/v1/users/`)
@@ -52,13 +52,14 @@ class UserSelect extends Component {
         <label>Select user:
 
         <select value={user} onChange={this.handleChange}>
+          <option style={{display: "none"}} disabled selected value></option>
             {this.props.users.map(user => {
                 return <option value={user.id} key={user.id}>{user.name}</option>
             })}
         </select>
         </label>
 
-        <input type='submit' value='Submit'></input>
+        {/* <input type='submit' value='Submit'></input> */}
         </form>
 
 
