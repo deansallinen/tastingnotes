@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
-import axios from 'axios'
-import UserSelect from './components/userSelect'
-import Notes from './components/notesList'
-import NoteInput from './components/noteInput'
+import axios from 'axios';
+import UserSelect from './components/userSelect';
+import Notes from './components/notesList';
+import NoteInput from './components/noteInput';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null, 
+      user: null,
       users: [],
       notes: [],
-      value: "",
+      value: '',
       isLoading: false,
-      error: null
+      error: null,
     };
 
     this.onUserSelect = this.onUserSelect.bind(this);
@@ -23,36 +23,37 @@ class App extends Component {
   }
 
   getNotes(userID) {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     // console.log(this.props)
-    axios.get(`http://penguin.linux.test:3001/v1/users/${userID}/notes`)
-    .then(notes => this.setState({notes: notes.data, isLoading: false}))
-    .catch(error => {
-        console.error(error)
-        this.setState({error, isLoading: false})
-    })
-}
+    axios
+      .get(`http://penguin.linux.test:3001/v1/users/${userID}/notes`)
+      .then(notes => this.setState({ notes: notes.data, isLoading: false }))
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+      });
+  }
 
   onUserSelect(user) {
-    this.setState({user})
+    this.setState({ user });
     this.getNotes(user);
   }
 
   onNewNote(note) {
     // const notes = this.state.notes.push(note)
-    const userID = this.state.user
+    const userID = this.state.user;
     // this.setState({notes})
-    this.setState({isLoading: true})
-    axios.post(`http://penguin.linux.test:3001/v1/users/${userID}/notes/`,
-        { userID , note }
-    )
+    this.setState({ isLoading: true });
+    axios
+      .post(`http://penguin.linux.test:3001/v1/users/${userID}/notes/`, { userID, note })
       .then(res => {
         console.log(res);
-        this.setState({notes: [...this.state.notes, res.data], error: null, isLoading: false})
-      }).catch(error => {
-        console.error(error)
-        this.setState({error, isLoading: false})
+        this.setState({ notes: [res.data, ...this.state.notes], error: null, isLoading: false });
       })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+      });
   }
 
   // handleSubmit(event) {
@@ -70,12 +71,13 @@ class App extends Component {
   // }
 
   componentDidMount() {
-    axios.get(`http://penguin.linux.test:3001/v1/users/`)
-    .then(res => this.setState({users: res.data}))
-    .catch(error => {
-        console.error(error)
-        this.setState({error})
-      })
+    axios
+      .get(`http://penguin.linux.test:3001/v1/users/`)
+      .then(res => this.setState({ users: res.data }))
+      .catch(error => {
+        console.error(error);
+        this.setState({ error });
+      });
   }
 
   render() {
@@ -83,14 +85,16 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-        <UserSelect onUserSelect={this.onUserSelect} users={this.state.users} />
-        {!!this.state.isLoading && <p>Loading...</p> }
-        {!!this.state.user && <div>
-          <p>{this.state.user.name}</p> 
-          <NoteInput userID={this.state.user.id} onNewNote={this.onNewNote}/>
-          <Notes notes={this.state.notes} />
-        </div>}
-        {!!this.state.error && <p>{this.state.error.message}</p>}
+          <UserSelect onUserSelect={this.onUserSelect} users={this.state.users} />
+          {!!this.state.isLoading && <p>Loading...</p>}
+          {!!this.state.user && (
+            <div>
+              <p>{this.state.user.name}</p>
+              <NoteInput userID={this.state.user.id} onNewNote={this.onNewNote} />
+              <Notes notes={this.state.notes} />
+            </div>
+          )}
+          {!!this.state.error && <p>{this.state.error.message}</p>}
         </header>
       </div>
     );
