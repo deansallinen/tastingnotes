@@ -33,7 +33,19 @@ class Note extends Component {
   }
 
   submitEdit(event) {
-    console.log('Edit submitted!');
+    const { _id, userID } = this.props;
+    const { note } = this.state;
+    this.setState({ isLoading: true });
+    axios
+      .put(`http://penguin.linux.test:3001/v1/users/${userID}/notes/${_id}`, { note })
+      .then((res) => {
+        console.log('Edit submitted: ', res);
+        this.setState({ isLoading: false });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+      });
     this.toggleEdit();
     event.preventDefault();
   }
@@ -51,7 +63,7 @@ class Note extends Component {
     axios
       .delete(`http://penguin.linux.test:3001/v1/users/${userID}/notes/${_id}`)
       .then((res) => {
-        console.log(res);
+        console.log('Note deleted', res);
         removeNote(_id);
         // this.setState(state => ({
         //   // notes: [res.data, ...state.notes],
