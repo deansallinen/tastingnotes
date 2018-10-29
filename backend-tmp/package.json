@@ -1,0 +1,31 @@
+{
+  "name": "tasting-notes-backend",
+  "description": "",
+  "keywords": [],
+  "repository": "",
+  "author": "",
+  "license": "",
+  "version": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "start": "cross-env NODE_ENVIRONMENT=production node index"
+  },
+  "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "cross-env": "^5.2.0",
+    "diskdb": "^0.1.17",
+    "dotenv": "^6.0.0",
+    "koa": "^2.5.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-helmet": "^4.0.0",
+    "koa-logger": "^3.2.0",
+    "koa-respond": "^1.0.1",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.3.7"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "nodemon": "^1.18.4"
+  }
+}
