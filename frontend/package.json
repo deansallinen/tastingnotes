@@ -8,11 +8,17 @@
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9",
     "axios": "^0.18.0",
+    "bulma": "^0.7.2",
+    "date-fns": "^1.29.0",
     "node-fetch": "^2.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
+    "react-helmet": "^5.2.0",
     "react-scripts": "^2.0.5",
+    "reactbulma": "^3.0.4",
+    "spectre.css": "^0.5.5",
+    "styled-components": "^4.0.3",
     "typescript": "^3.1.4"
   },
   "scripts": {
@@ -23,7 +29,7 @@
     "flow": "flow"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "airbnb"
   },
   "browserslist": [
     ">0.2%",
@@ -36,6 +42,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "flow-bin": "^0.84.0"
+    "flow-bin": "^0.84.0",
+    "tailwindcss": "^0.7.2"
   }
 }

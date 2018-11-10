@@ -7,6 +7,7 @@ const BodyParser = require('koa-bodyparser');
 const Helmet = require('koa-helmet');
 const respond = require('koa-respond');
 const mongoose = require('mongoose');
+
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 
 

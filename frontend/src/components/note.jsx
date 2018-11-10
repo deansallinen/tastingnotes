@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 class Note extends Component {
   constructor(props) {
@@ -9,6 +10,7 @@ class Note extends Component {
       isLoading: false,
       editing: false,
       error: null,
+      edits: null,
       note: null,
     };
     this.toggleEdit = this.toggleEdit.bind(this);
@@ -23,21 +25,22 @@ class Note extends Component {
   }
 
   handleChange(event) {
-    this.setState({ note: event.target.value });
+    this.setState({ edits: event.target.value });
   }
 
   toggleEdit() {
     this.setState(state => ({
+      edits: state.note,
       editing: !state.editing,
     }));
   }
 
   submitEdit(event) {
     const { _id, userID } = this.props;
-    const { note } = this.state;
-    this.setState({ isLoading: true });
+    const { note, edits } = this.state;
+    this.setState({ isLoading: true, note: edits });
     axios
-      .put(`http://penguin.linux.test:3001/v1/users/${userID}/notes/${_id}`, { note })
+      .put(`http://penguin.linux.test:3001/v1/users/${userID}/notes/${_id}`, { note: edits })
       .then((res) => {
         console.log('Edit submitted: ', res);
         this.setState({ isLoading: false });
@@ -52,7 +55,7 @@ class Note extends Component {
 
   cancelEdit(event) {
     console.log('Edit cancelled!');
-    this.setState((state, props) => ({ note: props.note }));
+    this.setState((state, props) => ({ note: state.note }));
     this.toggleEdit();
     event.preventDefault();
   }
@@ -78,19 +81,21 @@ class Note extends Component {
   }
 
   render() {
-    // const { _id } = this.props;
-    const { isLoading, editing, note } = this.state;
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
+    const { createdAt } = this.props;
+    const {
+ isLoading, editing, note, edits 
+} = this.state;
+    // if (isLoading) {
+    //   return <div>Loading...</div>;
+    // }
     if (editing) {
       return (
-        <div>
+        <div className={`control is-large ${isLoading ? 'is-loading' : ''}`}>
           <form onSubmit={this.submitEdit}>
-            <input type="text" value={note} onChange={this.handleChange} />
-            <input type="submit" value="Save" />
-            <button onClick={this.cancelEdit}>Cancel</button>
-
+            <input className="input is-large" type="text" value={edits} onChange={this.handleChange} />
+            <button className="button is-success" type="submit" value="Save">Save</button>
+            <button className="button" onClick={this.cancelEdit}>Cancel</button>
+            <button className="button is-danger" onClick={this.deleteNote}>Delete</button>
           </form>
         </div>
       );
@@ -98,12 +103,35 @@ class Note extends Component {
 
     return (
       <div>
-        <p>
-          {note}
-          <button onClick={this.toggleEdit}>Edit</button>
-          <button onClick={this.deleteNote}>Delete</button>
-        </p>
+        <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
+        <div className="level">
+          <p className="is-size-4">{note}</p>
+          <div className="level-right">
+            <button className="button" onClick={this.toggleEdit}>Edit</button>
+          </div>
+        </div>
       </div>
+      // <div className="card">
+      //   <header className="card-header">
+      //     <p className="card-header-title">
+
+    //     </p>
+    //     <a href="#" className="card-header-icon" aria-label="more options">
+    //       <span className="icon">
+    //         <i className="fas fa-angle-down" aria-hidden="true" />
+    //       </span>
+    //     </a>
+    //   </header>
+    //   <div className="card-content">
+    //     <div className="content">
+    //       {note}
+    //     </div>
+    //   </div>
+    //   <footer className="card-footer">
+    //     <span className=" card-footer-item" onClick={this.toggleEdit}>Edit</span>
+    //     <span className=" card-footer-item is-danger" onClick={this.deleteNote}>Delete</span>
+    //   </footer>
+    // </div>
     );
   }
 }

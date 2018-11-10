@@ -18,17 +18,18 @@ class UserSelect extends Component {
     const { users, user } = this.props;
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Select user:
-            <select value={user} onChange={this.handleChange}>
+        <form onSubmit={this.handleSubmit} className="level">
+          <label htmlFor="user-select" className="level-item">Select Test User </label>
+          <div className="select level-item">
+            <select id="user-select" value={user} onChange={this.handleChange}>
               {users.map(each => (
                 <option value={each.id} key={each.id}>
                   {each.name}
                 </option>
               ))}
             </select>
-          </label>
+          </div>
+
 
           {/* <input type='submit' value='Submit'></input> */}
         </form>

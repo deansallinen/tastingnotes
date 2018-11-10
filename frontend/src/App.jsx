@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-import UserSelect from './components/userSelect';
+import Helmet from 'react-helmet';
+import Header from './components/header';
 import Notes from './components/notesList';
 import NoteInput from './components/noteInput';
+import Toast from './components/toast';
+import Footer from './components/footer'
 
 class App extends Component {
   constructor(props) {
@@ -87,18 +90,43 @@ class App extends Component {
       users, user, notes, error,
     } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <UserSelect onUserSelect={this.onUserSelect} users={users} />
-          {!!user && (
+      <div className="">
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Tastingnotes</title>
+          <link rel="canonical" href="http://mysite.com/example" />
+        </Helmet>
+        <Header onUserSelect={this.onUserSelect} users={users} />
+        <section className="section">
+          <div className="container">
+            <h1 className="title">Tastingnotes</h1>
+            <h2 className="subtitle">
+              Transcribe the symphony on your palette <span role="img">🎉</span>
+            </h2>
+          </div>
+        </section>
+
+        {
+          !!user && (
             <div>
-              <p>{user.name}</p>
-              <NoteInput userID={user} onNewNote={this.onNewNote} />
-              <Notes notes={notes} removeNote={this.removeNote} />
+              <section className="section">
+                <div className="container">
+                  <NoteInput userID={user} onNewNote={this.onNewNote} />
+                </div>
+              </section>
+              <section className="section">
+                <div className="container">
+                  <Notes notes={notes} removeNote={this.removeNote} />
+                </div>
+              </section>
             </div>
-          )}
-          {!!error && <p>{error.message}</p>}
-        </header>
+          )
+        }
+
+
+        {!!error && <Toast message={error.message} />}
+
+        <Footer />
       </div>
     );
   }
