@@ -6,24 +6,30 @@ class NotesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      // isLoading: false,
       // error: null,
       // notes: [],
     };
   }
 
   render() {
-    const { notes, removeNote } = this.props;
-    const { isLoading } = this.state;
-    return isLoading ? (
-      <div>Loading...</div>
-    ) : (
-      <div>
-          {notes.length
-            ? notes.map(note => <Note key={note._id} {...note} removeNote={removeNote} />)
-            : <p>No notes</p>}
+    const { notes, removeNote, isLoading } = this.props;
+    if (notes.length) {
+      return (
+        <div className="tile is-ancestor ">
+          <p>{isLoading}</p>
+          <div className="tile is-parent is-vertical">
+            {notes.map(note => (
+              <Note key={note._id} {...note} removeNote={removeNote} />
+            ))}
+          </div>
         </div>
-    );
+      );
+    }
+    if (isLoading) {
+      return <p>Is Loading</p>;
+    }
+    return <p className="is-size-1">No notes yet!</p>;
   }
 }
 

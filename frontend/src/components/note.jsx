@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { format } from 'date-fns';
 
+const API = process.env.REACT_APP_APIURL;
+
 class Note extends Component {
   constructor(props) {
     super(props);
@@ -37,10 +39,10 @@ class Note extends Component {
 
   submitEdit(event) {
     const { _id, userID } = this.props;
-    const { note, edits } = this.state;
+    const { edits } = this.state;
     this.setState({ isLoading: true, note: edits });
     axios
-      .put(`http://penguin.linux.test:3001/v1/users/${userID}/notes/${_id}`, { note: edits })
+      .put(`http://${API}/v1/users/${userID}/notes/${_id}`, { note: edits })
       .then((res) => {
         console.log('Edit submitted: ', res);
         this.setState({ isLoading: false });
@@ -64,15 +66,15 @@ class Note extends Component {
     const { _id, userID, removeNote } = this.props;
     this.setState({ isLoading: true });
     axios
-      .delete(`http://penguin.linux.test:3001/v1/users/${userID}/notes/${_id}`)
+      .delete(`http://${API}/v1/users/${userID}/notes/${_id}`)
       .then((res) => {
         console.log('Note deleted', res);
         removeNote(_id);
-        // this.setState(state => ({
-        //   // notes: [res.data, ...state.notes],
-        //   error: null,
-        //   isLoading: false,
-        // }));
+        this.setState(state => ({
+          //   // notes: [res.data, ...state.notes],
+          error: null,
+          isLoading: false,
+        }));
       })
       .catch((error) => {
         console.error(error);
@@ -83,31 +85,55 @@ class Note extends Component {
   render() {
     const { createdAt } = this.props;
     const {
- isLoading, editing, note, edits 
-} = this.state;
+      isLoading, editing, note, edits,
+    } = this.state;
     // if (isLoading) {
     //   return <div>Loading...</div>;
     // }
     if (editing) {
       return (
-        <div className={`control is-large ${isLoading ? 'is-loading' : ''}`}>
-          <form onSubmit={this.submitEdit}>
-            <input className="input is-large" type="text" value={edits} onChange={this.handleChange} />
-            <button className="button is-success" type="submit" value="Save">Save</button>
-            <button className="button" onClick={this.cancelEdit}>Cancel</button>
-            <button className="button is-danger" onClick={this.deleteNote}>Delete</button>
-          </form>
+        <div className="tile is-child">
+          <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
+
+          <div className={`control is-large ${isLoading ? 'is-loading' : ''}`}>
+            <form onSubmit={this.submitEdit}>
+              <input
+                className="input is-large"
+                type="text"
+                value={edits}
+                onChange={this.handleChange}
+              />
+            </form>
+
+            <nav className="level" style={{ 'flex-direction': 'row-reverse' }}>
+              <div className="level-right" style={{ 'flex-direction': 'row-reverse' }}>
+                <button className="button is-success" type="submit" value="Save">
+                  Save
+                </button>
+                <button className="button" onClick={this.cancelEdit}>
+                  Cancel
+                </button>
+              </div>
+              <div className="level-left">
+                <button className="button is-danger" onClick={this.deleteNote}>
+                  Delete
+                </button>
+              </div>
+            </nav>
+          </div>
         </div>
       );
     }
 
     return (
-      <div>
+      <div className="tile is-child">
         <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
         <div className="level">
           <p className="is-size-4">{note}</p>
           <div className="level-right">
-            <button className="button" onClick={this.toggleEdit}>Edit</button>
+            <button className="button" onClick={this.toggleEdit}>
+              Edit
+            </button>
           </div>
         </div>
       </div>
