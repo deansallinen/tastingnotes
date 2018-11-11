@@ -16,6 +16,8 @@
     "graphql-playground-middleware-lambda": "^1.7.6",
     "graphql-request": "^1.8.2",
     "moment": "^2.22.2",
+    "mongodb-stitch-browser-sdk": "^4.0.14-6",
+    "mongodb-stitch-server-sdk": "^4.0.14-6",
     "mongoose": "^5.3.11",
     "node-fetch": "^2.2.0",
     "prop-types": "^15.6.2",
