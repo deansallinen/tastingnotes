@@ -72,10 +72,19 @@ const server = new ApolloServer({
   introspection: true,
   playground: true,
   context: async ({ event, context }) => ({
-    context: { ...context, callbackWaitsForEmptyEventLoop: false },
+    // context: { ...context, callbackWaitsForEmptyEventLoop: false },
+    context,
     event,
     db: await connectToDatabase(),
   }),
 });
 
-exports.handler = server.createHandler();
+exports.handler = server.createHandler(
+  {
+    cors: {
+      origin: '*',
+      credentials: true,
+      allowedHeaders: ['Content-Type'],
+    },
+  },
+);
