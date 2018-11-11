@@ -21,6 +21,7 @@ class App extends Component {
       notes: [],
       isLoading: false,
       error: null,
+      msg: null,
     };
 
     this.onUserSelect = this.onUserSelect.bind(this);
@@ -42,6 +43,8 @@ class App extends Component {
         console.error(error);
         this.setState({ error });
       });
+
+    axios.get('/.netlify/functions/hello').then(res => this.setState({ msg: res.data.msg }));
   }
 
   onUserSelect(user) {
@@ -91,7 +94,7 @@ class App extends Component {
   render() {
     // console.log(this.state.user)
     const {
-      users, user, notes, error,
+      users, user, notes, error, msg,
     } = this.state;
     return (
       <div className="">
@@ -101,6 +104,7 @@ class App extends Component {
           <link rel="canonical" href="http://mysite.com/example" />
         </Helmet>
         <Header onUserSelect={this.onUserSelect} users={users} />
+        <p>{msg}</p>
         {!!error && <Toast message={error.message} />}
         <section className="section">
           <div className="container">
