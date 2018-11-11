@@ -5,7 +5,7 @@ import React from 'react';
 import UserSelect from './userSelect';
 
 const Header = (props) => {
-  const { onUserSelect, users } = props;
+  const { onUserSelect, users, user } = props;
   return (
     <nav className="navbar  has-shadow" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
@@ -34,7 +34,7 @@ const Header = (props) => {
       <div id="navbarBasicExample" className="navbar-menu">
         <div className="navbar-end">
           <div className="navbar-item">
-            <UserSelect onUserSelect={onUserSelect} users={users} />
+            <UserSelect onUserSelect={onUserSelect} users={users} user={user} />
 
             {/* <div className="buttons">
                         <a className="button is-primary">

@@ -11,8 +11,6 @@ import Footer from './components/footer';
 
 const API = process.env.REACT_APP_APIURL;
 
-console.log(process.env);
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +20,8 @@ class App extends Component {
       notes: [],
       isLoading: false,
       error: null,
-      hello: [],
+      hello: '',
+      data: [],
     };
 
     this.onUserSelect = this.onUserSelect.bind(this);
@@ -35,37 +34,53 @@ class App extends Component {
     axios
       .get(`http://${API}/v1/users/`)
       .then((res) => {
-        const firstUser = res.data[0].id;
+        const firstUser = res.data[0];
+        // console.log('first user', firstUser);
         this.setState({ user: firstUser, users: res.data });
         return firstUser;
       })
-      .then(userID => this.getNotes(userID))
+      .then(user => this.getNotes(user._id))
       .catch((error) => {
         console.error(error);
         this.setState({ error });
       });
 
-    // axios.get('/.netlify/functions/hello').then(res => this.setState({ msg: res.data.msg }));
-    const gqlrequest = `
-      query Query { 
-        hello
-      }
-    `;
+    // const gqlrequest = `
+    //   query Query {
+    //     users {
+    //       id
+    //       name
+    //     }
+    //   }
+    // `;
 
-    request('/.netlify/functions/graphql', gqlrequest).then(res => this.setState({ hello: res.hello }));
+    // request('/.netlify/functions/graphql', gqlrequest)
+    //   .then((res) => {
+    //     console.log(res);
+    //     const { users } = res;
+    //     const [firstUser] = users;
+    //     this.setState({ user: firstUser, users });
+    //     return firstUser;
+    //   })
+    //   .then(user => this.getNotes(user.id))
+    //   .catch((error) => {
+    //     console.error(error);
+    //     this.setState({ error });
+    //   });
   }
 
-  onUserSelect(user) {
-    this.setState({ user });
-    this.getNotes(user);
+  onUserSelect(userID) {
+    this.setState({ userID });
+    this.getNotes(userID);
   }
 
   onNewNote(note) {
-    const { user } = this.state;
+    const userID = this.state.user._id;
+    console.log(userID);
     this.setState({ isLoading: true });
     axios
-      .post(`http://${API}/v1/users/${user}/notes/`, {
-        userID: user,
+      .post(`http://${API}/v1/users/${userID}/notes/`, {
+        userID,
         note,
       })
       .then((res) => {
@@ -84,13 +99,40 @@ class App extends Component {
 
   getNotes(userID) {
     this.setState({ isLoading: true });
-    // console.log(this.props)
     axios
       .get(`http://${API}/v1/users/${userID}/notes`)
       .then(notes => this.setState({ notes: notes.data, isLoading: false }))
       .catch((error) => {
         console.error(error);
         this.setState({ error, isLoading: false });
+      });
+
+    const query = `
+      query Query {
+        hello
+      }
+    `;
+
+    //   const query = `
+    //   query Query {
+    //     notes {
+    //       note
+    //       userID
+    //       createdAt
+    //       updatedAt
+    //     }
+    //   }
+    // `;
+
+    request('/.netlify/functions/graphql', query)
+      .then((res) => {
+        console.log(res);
+        const { hello } = res;
+        this.setState({ hello, isLoading: false });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ error });
       });
   }
 
@@ -111,9 +153,9 @@ class App extends Component {
           <title>Tastingnotes</title>
           <link rel="canonical" href="http://mysite.com/example" />
         </Helmet>
-        <Header onUserSelect={this.onUserSelect} users={users} />
-        <p>{msg}</p>
+        <Header onUserSelect={this.onUserSelect} users={users} user={user} />
         <p>{hello}</p>
+
         {!!error && <Toast message={error.message} />}
         <section className="section">
           <div className="container">
@@ -127,14 +169,13 @@ class App extends Component {
             </h2>
           </div>
         </section>
-
+        <section className="section">
+          <div className="container">
+            <NoteInput userID={user.id} onNewNote={this.onNewNote} />
+          </div>
+        </section>
         {!!user && (
           <div>
-            <section className="section">
-              <div className="container">
-                <NoteInput userID={user} onNewNote={this.onNewNote} />
-              </div>
-            </section>
             <section className="section">
               <div className="container">
                 <Notes notes={notes} removeNote={this.removeNote} isLoading />

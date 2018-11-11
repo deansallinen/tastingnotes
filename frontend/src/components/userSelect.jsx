@@ -4,32 +4,38 @@ import PropTypes from 'prop-types';
 class UserSelect extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      value: '',
+    };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(event) {
     const { onUserSelect } = this.props;
+    this.setState({ value: event.target.value });
     onUserSelect(event.target.value);
   }
 
   render() {
     const { users, user } = this.props;
+    const userID = user._id;
     return (
       <div>
         <form onSubmit={this.handleSubmit} className="level">
-          <label htmlFor="user-select" className="level-item">Select Test User </label>
+          <label htmlFor="user-select" className="level-item">
+            Select Test User
+            {' '}
+          </label>
           <div className="select level-item">
-            <select id="user-select" value={user} onChange={this.handleChange}>
+            <select id="user-select" value={this.state.value} onChange={this.handleChange}>
               {users.map(each => (
-                <option value={each.id} key={each.id}>
+                <option value={each._id} key={each._id}>
                   {each.name}
                 </option>
               ))}
             </select>
           </div>
-
 
           {/* <input type='submit' value='Submit'></input> */}
         </form>
@@ -45,7 +51,7 @@ UserSelect.defaultProps = {
 UserSelect.propTypes = {
   onUserSelect: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(PropTypes.object),
-  user: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 export default UserSelect;

@@ -1,18 +1,20 @@
+const { User } = require('../models');
 
-const users = require('../test-data/users');
+const allusers = require('../test-data/users');
 
 function oneUser(ctx) {
   // let user = ctx.request.query.user
   // let id = ctx.request.query.id
   const id = ctx.params.uid;
-  const [res] = users.filter(x => x.id === id);
+  const [res] = allusers.filter(x => x.id === id);
   // console.log(res)
   if (res) {
     ctx.ok(res);
   }
 }
 
-function allUsers(ctx) {
+async function allUsers(ctx) {
+  const users = await User.find({});
   ctx.ok(users);
 }
 
