@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import Helmet from 'react-helmet';
+import { request } from 'graphql-request';
 import Header from './components/header';
 import Notes from './components/notesList';
 import NoteInput from './components/noteInput';
@@ -21,7 +22,7 @@ class App extends Component {
       notes: [],
       isLoading: false,
       error: null,
-      msg: null,
+      hello: [],
     };
 
     this.onUserSelect = this.onUserSelect.bind(this);
@@ -44,7 +45,14 @@ class App extends Component {
         this.setState({ error });
       });
 
-    axios.get('/.netlify/functions/hello').then(res => this.setState({ msg: res.data.msg }));
+    // axios.get('/.netlify/functions/hello').then(res => this.setState({ msg: res.data.msg }));
+    const gqlrequest = `
+      query Query { 
+        hello
+      }
+    `;
+
+    request('/.netlify/functions/graphql', gqlrequest).then(res => this.setState({ hello: res.hello }));
   }
 
   onUserSelect(user) {
@@ -94,7 +102,7 @@ class App extends Component {
   render() {
     // console.log(this.state.user)
     const {
-      users, user, notes, error, msg,
+      users, user, notes, error, msg, hello,
     } = this.state;
     return (
       <div className="">
@@ -105,6 +113,7 @@ class App extends Component {
         </Helmet>
         <Header onUserSelect={this.onUserSelect} users={users} />
         <p>{msg}</p>
+        <p>{hello}</p>
         {!!error && <Toast message={error.message} />}
         <section className="section">
           <div className="container">
