@@ -19,7 +19,7 @@ class UserSelect extends Component {
 
   render() {
     const { users, user } = this.props;
-    const userID = user._id;
+    // const userID = user.id;
     return (
       <div>
         <form onSubmit={this.handleSubmit} className="level">
@@ -30,7 +30,7 @@ class UserSelect extends Component {
           <div className="select level-item">
             <select id="user-select" value={this.state.value} onChange={this.handleChange}>
               {users.map(each => (
-                <option value={each._id} key={each._id}>
+                <option value={each.id} key={each.id}>
                   {each.name}
                 </option>
               ))}

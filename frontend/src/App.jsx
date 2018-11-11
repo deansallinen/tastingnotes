@@ -15,13 +15,11 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: '',
+      user: {},
       users: [],
       notes: [],
       isLoading: false,
       error: null,
-      hello: '',
-      data: [],
     };
 
     this.onUserSelect = this.onUserSelect.bind(this);
@@ -31,47 +29,51 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get(`http://${API}/v1/users/`)
-      .then((res) => {
-        const firstUser = res.data[0];
-        // console.log('first user', firstUser);
-        this.setState({ user: firstUser, users: res.data });
-        return firstUser;
-      })
-      .then(user => this.getNotes(user._id))
-      .catch((error) => {
-        console.error(error);
-        this.setState({ error });
-      });
-
-    // const gqlrequest = `
-    //   query Query {
-    //     users {
-    //       id
-    //       name
-    //     }
-    //   }
-    // `;
-
-    // request('/.netlify/functions/graphql', gqlrequest)
+    // axios
+    //   .get(`http://${API}/v1/users/`)
     //   .then((res) => {
-    //     console.log(res);
-    //     const { users } = res;
-    //     const [firstUser] = users;
-    //     this.setState({ user: firstUser, users });
+    //     const firstUser = res.data[0];
+    //     // console.log('first user', firstUser);
+    //     this.setState({ user: firstUser, users: res.data });
     //     return firstUser;
     //   })
-    //   .then(user => this.getNotes(user.id))
+    //   .then(user => this.getNotes(user._id))
     //   .catch((error) => {
     //     console.error(error);
     //     this.setState({ error });
     //   });
+
+    const query = `
+      query Query {
+        users {
+          id
+          name
+          notes {
+            id
+            userID
+            note
+            createdAt
+            updatedAt
+          }
+        }
+      }
+    `;
+    request('/.netlify/functions/graphql', query)
+      .then((res) => {
+        const { users } = res;
+        const [user] = users;
+        this.setState({ users, user });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ error });
+      });
   }
 
   onUserSelect(userID) {
-    this.setState({ userID });
-    this.getNotes(userID);
+    const { users } = this.state;
+    const [user] = users.filter(each => each.id === userID);
+    this.setState({ user });
   }
 
   onNewNote(note) {
@@ -107,12 +109,6 @@ class App extends Component {
         this.setState({ error, isLoading: false });
       });
 
-    const query = `
-      query Query {
-        hello
-      }
-    `;
-
     //   const query = `
     //   query Query {
     //     notes {
@@ -124,16 +120,16 @@ class App extends Component {
     //   }
     // `;
 
-    request('/.netlify/functions/graphql', query)
-      .then((res) => {
-        console.log(res);
-        const { hello } = res;
-        this.setState({ hello, isLoading: false });
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setState({ error });
-      });
+    // request('/.netlify/functions/graphql', query)
+    //   .then((res) => {
+    //     console.log(res);
+    //     const { hello } = res;
+    //     this.setState({ hello, isLoading: false });
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     this.setState({ error });
+    //   });
   }
 
   removeNote(id) {
@@ -143,9 +139,8 @@ class App extends Component {
 
   render() {
     // console.log(this.state.user)
-    const {
-      users, user, notes, error, msg, hello,
-    } = this.state;
+    const { users, user, error } = this.state;
+    const { notes } = user;
     return (
       <div className="">
         <Helmet>
@@ -154,7 +149,6 @@ class App extends Component {
           <link rel="canonical" href="http://mysite.com/example" />
         </Helmet>
         <Header onUserSelect={this.onUserSelect} users={users} user={user} />
-        <p>{hello}</p>
 
         {!!error && <Toast message={error.message} />}
         <section className="section">
