@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import axios from 'axios';
+// import axios from 'axios';
 import Helmet from 'react-helmet';
 import { request } from 'graphql-request';
 import Header from './components/header';
@@ -9,7 +9,7 @@ import NoteInput from './components/noteInput';
 import Toast from './components/toast';
 import Footer from './components/footer';
 
-const API = process.env.REACT_APP_APIURL;
+// const API = process.env.REACT_APP_APIURL;
 
 class App extends Component {
   constructor(props) {
@@ -25,6 +25,7 @@ class App extends Component {
     this.onUserSelect = this.onUserSelect.bind(this);
     this.onNewNote = this.onNewNote.bind(this);
     // this.getNotes = this.getNotes.bind(this);
+    this.deleteNote = this.deleteNote.bind(this);
     this.removeNote = this.removeNote.bind(this);
   }
 
@@ -83,9 +84,9 @@ class App extends Component {
     this.setState({ isLoading: true });
 
     const query = `
-    mutation createNote($note: String) {
+    mutation createNote($note: String, $userID: String) {
       createNote(
-        userID: "5be790841c9d4400003ce83d", 
+        userID: $userID, 
         note: $note
       ) {
         id
@@ -97,7 +98,7 @@ class App extends Component {
     }
     `;
 
-    request('/.netlify/functions/graphql', query, { note })
+    request('/.netlify/functions/graphql', query, { userID: id, note })
       .then((res) => {
         const newnote = res.createNote;
         // console.log('mutation res', newnote);
@@ -171,6 +172,47 @@ class App extends Component {
     this.setState(prevState => ({ notes: prevState.notes.filter(note => note.id !== id) }));
   }
 
+  deleteNote(noteID) {
+    // this.setState({ isLoading: true });
+
+    const query = `
+    mutation deleteNote($noteID: ID) {
+      deleteNote(id: $noteID) {
+        note
+      }
+    }
+    `;
+
+    request('/.netlify/functions/graphql', query, { noteID }).catch((error) => {
+      console.error(error);
+      this.setState({ error });
+    });
+
+    this.setState(prevState => ({
+      // isLoading: false,
+      user: {
+        notes: prevState.user.notes.filter(note => note.id !== noteID),
+      },
+    }));
+    // const { id, userID, removeNote } = this.props;
+    // this.setState({ isLoading: true });
+    // axios
+    //   .delete(`http://${API}/v1/users/${userID}/notes/${id}`)
+    //   .then((res) => {
+    //     console.log('Note deleted', res);
+    //     removeNote(id);
+    //     this.setState(state => ({
+    //       //   // notes: [res.data, ...state.notes],
+    //       error: null,
+    //       isLoading: false,
+    //     }));
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     this.setState({ error, isLoading: false });
+    //   });
+  }
+
   render() {
     // console.log(this.state.user)
     const { users, user, error } = this.state;
@@ -206,7 +248,12 @@ class App extends Component {
           <div>
             <section className="section">
               <div className="container">
-                <Notes notes={notes} removeNote={this.removeNote} isLoading />
+                <Notes
+                  notes={notes}
+                  removeNote={this.removeNote}
+                  deleteNote={this.deleteNote}
+                  isLoading
+                />
               </div>
             </section>
           </div>

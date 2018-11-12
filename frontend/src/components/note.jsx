@@ -63,27 +63,12 @@ class Note extends Component {
   }
 
   deleteNote() {
-    const { id, userID, removeNote } = this.props;
-    this.setState({ isLoading: true });
-    axios
-      .delete(`http://${API}/v1/users/${userID}/notes/${id}`)
-      .then((res) => {
-        console.log('Note deleted', res);
-        removeNote(id);
-        this.setState(state => ({
-          //   // notes: [res.data, ...state.notes],
-          error: null,
-          isLoading: false,
-        }));
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setState({ error, isLoading: false });
-      });
+    const { deleteNote, id } = this.props;
+    deleteNote(id);
   }
 
   render() {
-    const { createdAt } = this.props;
+    const { createdAt, id } = this.props;
     const {
       isLoading, editing, note, edits,
     } = this.state;
@@ -133,6 +118,7 @@ class Note extends Component {
     return (
       <div className="tile is-child">
         <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
+        <div className="is-size-7">{id}</div>
         <div className="level">
           <p className="is-size-4">{note}</p>
           <div className="level-right">
@@ -140,8 +126,8 @@ class Note extends Component {
               Edit
             </button>
             <button className="button is-danger" onClick={this.deleteNote}>
-                  Delete
-                </button>
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -157,7 +143,7 @@ Note.propTypes = {
   note: PropTypes.string,
   userID: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  removeNote: PropTypes.func.isRequired,
+  deleteNote: PropTypes.func.isRequired,
 };
 
 export default Note;
