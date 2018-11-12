@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 // import axios from 'axios';
-import { format } from 'date-fns';
+import moment from 'moment';
 
 // const API = process.env.REACT_APP_APIURL;
 
@@ -66,7 +66,7 @@ class Note extends Component {
 
     return (
       <div className="tile is-child">
-        <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
+        <div className="is-size-7">{moment(parseInt(createdAt, 10)).format("MMM MM HH:mm")}</div>
         <div className="is-size-7">{id}</div>
         {editing ? (
           <div className={`control is-large ${isLoading ? 'is-loading' : ''}`}>
