@@ -18,7 +18,7 @@ class UserSelect extends Component {
   }
 
   render() {
-    const { users, user } = this.props;
+    const { users } = this.props;
     // const userID = user.id;
     return (
       <div>

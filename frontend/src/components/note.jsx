@@ -38,11 +38,11 @@ class Note extends Component {
   }
 
   submitEdit(event) {
-    const { _id, userID } = this.props;
+    const { id, userID } = this.props;
     const { edits } = this.state;
     this.setState({ isLoading: true, note: edits });
     axios
-      .put(`http://${API}/v1/users/${userID}/notes/${_id}`, { note: edits })
+      .put(`http://${API}/v1/users/${userID}/notes/${id}`, { note: edits })
       .then((res) => {
         console.log('Edit submitted: ', res);
         this.setState({ isLoading: false });
@@ -63,13 +63,13 @@ class Note extends Component {
   }
 
   deleteNote() {
-    const { _id, userID, removeNote } = this.props;
+    const { id, userID, removeNote } = this.props;
     this.setState({ isLoading: true });
     axios
-      .delete(`http://${API}/v1/users/${userID}/notes/${_id}`)
+      .delete(`http://${API}/v1/users/${userID}/notes/${id}`)
       .then((res) => {
         console.log('Note deleted', res);
-        removeNote(_id);
+        removeNote(id);
         this.setState(state => ({
           //   // notes: [res.data, ...state.notes],
           error: null,
@@ -107,7 +107,12 @@ class Note extends Component {
 
             <nav className="level" style={{ 'flex-direction': 'row-reverse' }}>
               <div className="level-right" style={{ 'flex-direction': 'row-reverse' }}>
-                <button className="button is-success" type="submit" value="Save">
+                <button
+                  className="button is-success"
+                  type="submit"
+                  value="Save"
+                  onClick={this.submitEdit}
+                >
                   Save
                 </button>
                 <button className="button" onClick={this.cancelEdit}>
@@ -137,27 +142,6 @@ class Note extends Component {
           </div>
         </div>
       </div>
-      // <div className="card">
-      //   <header className="card-header">
-      //     <p className="card-header-title">
-
-    //     </p>
-    //     <a href="#" className="card-header-icon" aria-label="more options">
-    //       <span className="icon">
-    //         <i className="fas fa-angle-down" aria-hidden="true" />
-    //       </span>
-    //     </a>
-    //   </header>
-    //   <div className="card-content">
-    //     <div className="content">
-    //       {note}
-    //     </div>
-    //   </div>
-    //   <footer className="card-footer">
-    //     <span className=" card-footer-item" onClick={this.toggleEdit}>Edit</span>
-    //     <span className=" card-footer-item is-danger" onClick={this.deleteNote}>Delete</span>
-    //   </footer>
-    // </div>
     );
   }
 }
@@ -169,7 +153,7 @@ Note.defaultProps = {
 Note.propTypes = {
   note: PropTypes.string,
   userID: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   removeNote: PropTypes.func.isRequired,
 };
 

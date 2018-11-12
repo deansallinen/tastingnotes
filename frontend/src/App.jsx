@@ -24,7 +24,7 @@ class App extends Component {
 
     this.onUserSelect = this.onUserSelect.bind(this);
     this.onNewNote = this.onNewNote.bind(this);
-    this.getNotes = this.getNotes.bind(this);
+    // this.getNotes = this.getNotes.bind(this);
     this.removeNote = this.removeNote.bind(this);
   }
 
@@ -78,8 +78,15 @@ class App extends Component {
 
   onNewNote(note) {
     const userID = this.state.user._id;
+    const { notes } = this.state.user;
     console.log(userID);
-    this.setState({ isLoading: true });
+    this.setState(state => ({
+      isLoading: true,
+      user: {
+        ...state.user,
+        notes: [note, ...state.user.notes],
+      },
+    }));
     axios
       .post(`http://${API}/v1/users/${userID}/notes/`, {
         userID,
@@ -99,42 +106,42 @@ class App extends Component {
       });
   }
 
-  getNotes(userID) {
-    this.setState({ isLoading: true });
-    axios
-      .get(`http://${API}/v1/users/${userID}/notes`)
-      .then(notes => this.setState({ notes: notes.data, isLoading: false }))
-      .catch((error) => {
-        console.error(error);
-        this.setState({ error, isLoading: false });
-      });
+  // getNotes(userID) {
+  //   this.setState({ isLoading: true });
+  //   axios
+  //     .get(`http://${API}/v1/users/${userID}/notes`)
+  //     .then(notes => this.setState({ notes: notes.data, isLoading: false }))
+  //     .catch((error) => {
+  //       console.error(error);
+  //       this.setState({ error, isLoading: false });
+  //     });
 
-    //   const query = `
-    //   query Query {
-    //     notes {
-    //       note
-    //       userID
-    //       createdAt
-    //       updatedAt
-    //     }
-    //   }
-    // `;
+  //   //   const query = `
+  //   //   query Query {
+  //   //     notes {
+  //   //       note
+  //   //       userID
+  //   //       createdAt
+  //   //       updatedAt
+  //   //     }
+  //   //   }
+  //   // `;
 
-    // request('/.netlify/functions/graphql', query)
-    //   .then((res) => {
-    //     console.log(res);
-    //     const { hello } = res;
-    //     this.setState({ hello, isLoading: false });
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     this.setState({ error });
-    //   });
-  }
+  //   // request('/.netlify/functions/graphql', query)
+  //   //   .then((res) => {
+  //   //     console.log(res);
+  //   //     const { hello } = res;
+  //   //     this.setState({ hello, isLoading: false });
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     console.error(error);
+  //   //     this.setState({ error });
+  //   //   });
+  // }
 
   removeNote(id) {
     // const notes = []
-    this.setState(prevState => ({ notes: prevState.notes.filter(note => note._id !== id) }));
+    this.setState(prevState => ({ notes: prevState.notes.filter(note => note.id !== id) }));
   }
 
   render() {

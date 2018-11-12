@@ -20,7 +20,7 @@ class NotesList extends Component {
           <p>{isLoading}</p>
           <div className="tile is-parent is-vertical">
             {notes.map(note => (
-              <Note key={note._id} {...note} removeNote={removeNote} />
+              <Note key={note.id} {...note} removeNote={removeNote} />
             ))}
           </div>
         </div>
