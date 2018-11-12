@@ -14,7 +14,7 @@ class App extends Component {
     this.state = {
       user: {},
       users: [],
-      notes: [],
+      // notes: [],
       isLoading: false,
       error: null,
     };
@@ -22,6 +22,7 @@ class App extends Component {
     this.onUserSelect = this.onUserSelect.bind(this);
     this.onNewNote = this.onNewNote.bind(this);
     this.deleteNote = this.deleteNote.bind(this);
+    this.updateNote = this.updateNote.bind(this);
   }
 
   componentDidMount() {
@@ -95,6 +96,43 @@ class App extends Component {
       });
   }
 
+  updateNote(args) {
+    const { id, edits } = args;
+    const { user } = this.state;
+    const uid = user.id;
+    console.log(id, edits, uid);
+    this.setState({ isLoading: true });
+
+    const query = `
+    mutation updateNote($nid: ID, $input: NoteInput) {
+      updateNote(id: $nid, input: $input) {
+        id
+        userID
+        note
+        createdAt
+        updatedAt
+      }
+    }
+    `;
+
+    request('/.netlify/functions/graphql', query, { nid: id, input: { note: edits, userID: uid } })
+      .then((res) => {
+        const updatedNote = res.updateNote;
+        console.log(updatedNote);
+        this.setState(state => ({
+          isLoading: false,
+          // user: {
+          //   ...state.user,
+          //   notes: [updatedNote, ...state.user.notes],
+          // },
+        }));
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ error });
+      });
+  }
+
   deleteNote(noteID) {
     const query = `
     mutation deleteNote($noteID: ID) {
@@ -154,6 +192,7 @@ class App extends Component {
                   notes={notes}
                   removeNote={this.removeNote}
                   deleteNote={this.deleteNote}
+                  updateNote={this.updateNote}
                   isLoading
                 />
               </div>

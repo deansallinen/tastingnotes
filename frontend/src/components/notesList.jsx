@@ -13,14 +13,16 @@ class NotesList extends Component {
   }
 
   render() {
-    const { notes, deleteNote, isLoading } = this.props;
+    const {
+      notes, deleteNote, updateNote, isLoading,
+    } = this.props;
     if (notes.length) {
       return (
         <div className="tile is-ancestor ">
           <p>{isLoading}</p>
           <div className="tile is-parent is-vertical">
             {notes.map(note => (
-              <Note key={note.id} {...note} deleteNote={deleteNote} />
+              <Note key={note.id} {...note} deleteNote={deleteNote} updateNote={updateNote} />
             ))}
           </div>
         </div>

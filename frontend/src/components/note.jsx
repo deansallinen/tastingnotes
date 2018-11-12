@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+// import axios from 'axios';
 import { format } from 'date-fns';
 
-const API = process.env.REACT_APP_APIURL;
+// const API = process.env.REACT_APP_APIURL;
 
 class Note extends Component {
   constructor(props) {
@@ -38,26 +38,17 @@ class Note extends Component {
   }
 
   submitEdit(event) {
-    const { id, userID } = this.props;
+    const { id, updateNote } = this.props;
     const { edits } = this.state;
-    this.setState({ isLoading: true, note: edits });
-    axios
-      .put(`http://${API}/v1/users/${userID}/notes/${id}`, { note: edits })
-      .then((res) => {
-        console.log('Edit submitted: ', res);
-        this.setState({ isLoading: false });
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setState({ error, isLoading: false });
-      });
+    this.setState(prevState => ({ note: prevState.edits }));
+    updateNote({ id, edits });
     this.toggleEdit();
     event.preventDefault();
   }
 
   cancelEdit(event) {
     console.log('Edit cancelled!');
-    this.setState((state, props) => ({ note: state.note }));
+    this.setState(prevState => ({ note: prevState.note }));
     this.toggleEdit();
     event.preventDefault();
   }
@@ -72,14 +63,12 @@ class Note extends Component {
     const {
       isLoading, editing, note, edits,
     } = this.state;
-    // if (isLoading) {
-    //   return <div>Loading...</div>;
-    // }
-    if (editing) {
-      return (
-        <div className="tile is-child">
-          <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
 
+    return (
+      <div className="tile is-child">
+        <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
+        <div className="is-size-7">{id}</div>
+        {editing ? (
           <div className={`control is-large ${isLoading ? 'is-loading' : ''}`}>
             <form onSubmit={this.submitEdit}>
               <input
@@ -90,8 +79,8 @@ class Note extends Component {
               />
             </form>
 
-            <nav className="level" style={{ 'flex-direction': 'row-reverse' }}>
-              <div className="level-right" style={{ 'flex-direction': 'row-reverse' }}>
+            <nav className="level" style={{ flexDirection: 'row-reverse' }}>
+              <div className="level-right" style={{ flexDirection: 'row-reverse' }}>
                 <button
                   className="button is-success"
                   type="submit"
@@ -111,25 +100,19 @@ class Note extends Component {
               </div>
             </nav>
           </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="tile is-child">
-        <div className="is-size-7">{format(createdAt, 'MMM Do HH:mm')}</div>
-        <div className="is-size-7">{id}</div>
-        <div className="level">
-          <p className="is-size-4">{note}</p>
-          <div className="level-right">
-            <button className="button" onClick={this.toggleEdit}>
-              Edit
-            </button>
-            <button className="button is-danger" onClick={this.deleteNote}>
-              Delete
-            </button>
+        ) : (
+          <div className="level">
+            <p className="is-size-4">{note}</p>
+            <div className="level-right">
+              <button className="button" onClick={this.toggleEdit}>
+                Edit
+              </button>
+              <button className="button is-danger" onClick={this.deleteNote}>
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -144,6 +127,7 @@ Note.propTypes = {
   userID: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   deleteNote: PropTypes.func.isRequired,
+  updateNote: PropTypes.func.isRequired,
 };
 
 export default Note;

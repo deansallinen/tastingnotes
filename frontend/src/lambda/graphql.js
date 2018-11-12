@@ -18,7 +18,7 @@ const typeDefs = gql`
   }
   type Mutation {
     createNote(note: String, userID: String): Note
-    # updateNote(id: ID, input: NoteInput): Note
+    updateNote(id: ID, input: NoteInput): Note
     deleteNote(id: ID): Note
     # createUser
     # updateUser
@@ -58,10 +58,7 @@ const resolvers = {
       return newNote.save();
     },
     deleteNote: (parent, args, context) => Note.findByIdAndDelete(args.id),
-    // updateNote: (parent, args, context) => {
-    //   const { id, note } = args.input;
-    //   return Note.findByIdAndUpdate(args.id, { note });
-    // },
+    updateNote: (parent, args, context) => Note.findByIdAndUpdate(args.id, { ...args.input }, { new: true }),
   },
   // Note: {
   //   user: (parent, args, context) => User.findOne({ _id: parent.userID }),
