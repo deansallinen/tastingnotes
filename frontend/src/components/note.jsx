@@ -139,6 +139,9 @@ class Note extends Component {
             <button className="button" onClick={this.toggleEdit}>
               Edit
             </button>
+            <button className="button is-danger" onClick={this.deleteNote}>
+                  Delete
+                </button>
           </div>
         </div>
       </div>

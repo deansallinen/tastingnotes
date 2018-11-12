@@ -53,6 +53,7 @@ const resolvers = {
   },
   Mutation: {
     createNote: (parent, args, context) => {
+      console.log(args);
       const newNote = new Note({ ...args });
       return newNote.save();
     },

@@ -77,33 +77,60 @@ class App extends Component {
   }
 
   onNewNote(note) {
-    const userID = this.state.user._id;
-    const { notes } = this.state.user;
-    console.log(userID);
-    this.setState(state => ({
-      isLoading: true,
-      user: {
-        ...state.user,
-        notes: [note, ...state.user.notes],
-      },
-    }));
-    axios
-      .post(`http://${API}/v1/users/${userID}/notes/`, {
-        userID,
-        note,
-      })
+    const { user } = this.state;
+    const { id } = user;
+    // console.log(id, note);
+    this.setState({ isLoading: true });
+
+    const query = `
+    mutation createNote($note: String) {
+      createNote(
+        userID: "5be790841c9d4400003ce83d", 
+        note: $note
+      ) {
+        id
+        userID
+        note
+        createdAt
+        updatedAt
+      }
+    }
+    `;
+
+    request('/.netlify/functions/graphql', query, { note })
       .then((res) => {
-        console.log(res);
-        this.setState(prevState => ({
-          notes: [res.data, ...prevState.notes],
-          error: null,
+        const newnote = res.createNote;
+        // console.log('mutation res', newnote);
+        this.setState(state => ({
           isLoading: false,
+          user: {
+            ...state.user,
+            notes: [newnote, ...state.user.notes],
+          },
         }));
       })
       .catch((error) => {
         console.error(error);
-        this.setState({ error, isLoading: false });
+        this.setState({ error });
       });
+
+    // axios
+    //   .post(`http://${API}/v1/users/${userID}/notes/`, {
+    //     userID,
+    //     note,
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //     this.setState(prevState => ({
+    //       notes: [res.data, ...prevState.notes],
+    //       error: null,
+    //       isLoading: false,
+    //     }));
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     this.setState({ error, isLoading: false });
+    //   });
   }
 
   // getNotes(userID) {
