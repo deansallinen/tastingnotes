@@ -1,7 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
-const mongoose = require('mongoose');
 const connectToDatabase = require('../db');
-const users = require('../../../backend/test-data/users');
 
 require('dotenv').config();
 
