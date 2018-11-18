@@ -1,4 +1,8 @@
-const { ApolloServer, gql } = require('apollo-server-lambda');
+const {
+    ApolloServer,
+    gql
+} = require('apollo-server-lambda');
+
 const mongoose = require('mongoose');
 // const {
 //     Stitch,
@@ -18,9 +22,9 @@ const URI = 'mongodb+srv://dean:7rNxmsmN4m7VqeT@cluster0-2y6kf.gcp.mongodb.net/t
 //     // Buffering means mongoose will queue up operations if it gets
 //     // disconnected from MongoDB and send them when it reconnects.
 //     // With serverless, better to fail fast if not connected.
-//     bufferCommands: false, // Disable mongoose buffering TODO add these in below
-//     bufferMaxEntries: 0, // and MongoDB driver buffering TODO
-//     useNewUrlParser: true, TODO
+//     bufferCommands: false, // Disable mongoose buffering
+//     bufferMaxEntries: 0, // and MongoDB driver buffering
+//     useNewUrlParser: true,
 //   });
 //   const noteSchema = new mongoose.Schema(
 //     {
@@ -42,20 +46,38 @@ const URI = 'mongodb+srv://dean:7rNxmsmN4m7VqeT@cluster0-2y6kf.gcp.mongodb.net/t
 
 // const { Note, User } = require('../models');
 
-const setupUserModel = (mongo) => { // TODO either add Notes model here or create second function
-    
+const setupUserModel = (mongo) => { // TODO maybe combine with Notes model here
+
     const userSchema = new mongoose.Schema({
         name: String,
     });
 
     const User = mongo.model('User', userSchema);
 
-    return {User};
+    return {
+        User
+    };
+}
+
+const setupNoteModel = (mongo) => {
+
+    const noteSchema = new mongoose.Schema({
+        userID: String,
+        note: String,
+    }, {
+        timestamps: true
+    })
+
+    const Note = mongo.model('Note', noteSchema);
+
+    return {
+        Note
+    };
 }
 
 
 // Schema
-const typeDefs = gql`
+const typeDefs = gql `
   type Query {
     hello: [User]
     user(id: ID): User
@@ -91,66 +113,85 @@ const typeDefs = gql`
 
 // Resolvers
 const resolvers = {
-  Query: {
-    hello: async (parent, args, context) => await context.User.find(),
-    user: (parent, args, context) => User.findById(args.id), // TODO make all below async
-    note: (parent, args, context) => Note.findById(args.id), // TODO
-    users: (parent, args, context) => User.find(), // TODO
-    notes: (parent, args, context) => Note.find({ ...args }), // TODO
-  },
-  Mutation: {
-    createNote: (parent, args, context) => {
-      console.log(args);
-      const newNote = new Note({ ...args });
-      return newNote.save();
+    Query: {
+        hello: async (parent, args, context) => await context.User.find(),
+        user: async (parent, args, context) => await context.User.findById(args.id),
+        note: async (parent, args, context) => await context.Note.findById(args.id),
+        users: async (parent, args, context) => await context.User.find(),
+        notes: async (parent, args, context) => await context.Note.find({ ...args}),
     },
-    deleteNote: (parent, args, context) => Note.findByIdAndDelete(args.id), // TODO
-    updateNote: (parent, args, context) => Note.findByIdAndUpdate(args.id, { ...args.input }, { new: true }), // TODO
-  },
-  // Note: {
-  //   user: (parent, args, context) => User.findOne({ _id: parent.userID }),
-  // },
-  User: {
-    notes: (parent, args, context) => Note.find({ userID: parent.id }).sort({ createdAt: -1 }), // TODO
-  },
+    Mutation: {
+        createNote: (parent, args, context) => {
+            const Note = context.Note
+            console.log(args);
+            const newNote = new Note({ ...args});
+            return newNote.save();
+        },
+        deleteNote: async (parent, args, context) => {
+            console.log(args)
+            const res = await context.Note.findByIdAndDelete(args.id)
+            console.log(res)
+        }, // TODO
+        updateNote: async (parent, args, context) => await context.Note.findByIdAndUpdate(args.id, { ...args.input
+        }, { new: true }), // TODO
+    },
+    // Note: {
+    //   user: (parent, args, context) => User.findOne({ _id: parent.userID }),
+    // },
+    User: {
+        notes: async (parent, args, context) => await context.Note.find({
+            userID: parent.id
+        }).sort({
+            createdAt: -1
+        }), // TODO
+    },
 };
 
-let client, db, mongo; // TODO cleanup
+let mongo; // TODO cleanup
 
 const server = new ApolloServer({
-  typeDefs,
-  // cors: true, // TODO find out if needed
-  resolvers,
-  introspection: true,
-  playground: true,
-  context: async (context, event) => {
-    if (!mongo) {
-        console.log('==> Using new connection.')
-        mongo = await mongoose.createConnection(URI);
-        return {
-        ...context,
-        // callbackWaitsForEmptyEventLoop: false,
-        // conn: await client.auth.loginWithCredential(new AnonymousCredential())
-        ...setupUserModel(mongo)
+    typeDefs,
+    // cors: true, // TODO find out if needed
+    resolvers,
+    introspection: true,
+    playground: true,
+    context: async(context, event) => {
+        if (!mongo) {
+            console.log('==> Using new connection.')
+            mongo = await mongoose.createConnection(URI,{
+                bufferCommands: false, // Disable mongoose buffering
+                bufferMaxEntries: 0, // and MongoDB driver buffering
+                useNewUrlParser: true,
+            });
+            return {
+                ...context,
+                // callbackWaitsForEmptyEventLoop: false,
+                // conn: await client.auth.loginWithCredential(new AnonymousCredential())
+                ...setupUserModel(mongo),
+                ...setupNoteModel(mongo)
+            }
         }
-    }
-    // if (!client){
-    //     client = Stitch.initializeDefaultAppClient('tastingnotes-wnnlh');
-    //     db = client.getServiceClient(RemoteMongoClient.factory, 'mongodb-atlas').db('tastingnotes');
-    // }
-    console.log('==> Using existing connection.')
-    return {...context, User: mongo.model('User')}
-    
+        // if (!client){
+        //     client = Stitch.initializeDefaultAppClient('tastingnotes-wnnlh');
+        //     db = client.getServiceClient(RemoteMongoClient.factory, 'mongodb-atlas').db('tastingnotes');
+        // }
+        console.log('==> Using existing connection.')
+        return {
+            ...context,
+            User: mongo.model('User'),
+            Note: mongo.model('Note')
+        }
 
-  },
+
+    },
 });
 
 exports.handler = server.createHandler(
-  // {
-  //   cors: { // TODO find out if needed
-  //     origin: '*',
-  //     credentials: true,
-  //     allowedHeaders: ['Content-Type'],
-  //   },
-  // },
+    // {
+    //   cors: { // TODO find out if needed
+    //     origin: '*',
+    //     credentials: true,
+    //     allowedHeaders: ['Content-Type'],
+    //   },
+    // },
 );

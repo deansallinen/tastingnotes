@@ -67,7 +67,7 @@ class App extends Component {
     const query = `
     mutation createNote($note: String, $userID: String) {
       createNote(
-        userID: $userID, 
+        userID: $userID,
         note: $note
       ) {
         id
@@ -142,10 +142,11 @@ class App extends Component {
     }
     `;
 
-    request('/.netlify/functions/graphql', query, { noteID }).catch((error) => {
-      console.error(error);
-      this.setState({ error });
-    });
+    request('/.netlify/functions/graphql', query, { noteID })
+        .catch((error) => {
+          console.error(error);
+          this.setState({ error });
+        });
 
     this.setState(prevState => ({
       user: {
