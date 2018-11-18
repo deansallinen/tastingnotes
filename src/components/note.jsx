@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import axios from 'axios';
 import moment from 'moment';
 
-// const API = process.env.REACT_APP_APIURL;
+const stars = [
+  '🌟🌟🌟🌟🌟',
+  '⭐⭐⭐⭐',
+  '⭐⭐⭐',
+  '⭐⭐',
+  '⭐',
+];
 
 class Note extends Component {
   constructor(props) {
@@ -14,6 +19,7 @@ class Note extends Component {
       error: null,
       edits: null,
       note: null,
+      rating: null,
     };
     this.toggleEdit = this.toggleEdit.bind(this);
     this.deleteNote = this.deleteNote.bind(this);
@@ -23,7 +29,7 @@ class Note extends Component {
   }
 
   componentDidMount() {
-    this.setState((state, props) => ({ note: props.note }));
+    this.setState((state, props) => ({ noteText: props.noteText, rating: props.rating }));
   }
 
   handleChange(event) {
@@ -61,12 +67,12 @@ class Note extends Component {
   render() {
     const { createdAt, id } = this.props;
     const {
-      isLoading, editing, note, edits,
+      isLoading, editing, noteText, edits, rating,
     } = this.state;
 
     return (
       <div className="tile is-child">
-        <div className="is-size-7">{moment(parseInt(createdAt, 10)).format("MMM MM HH:mm")}</div>
+        <div className="is-size-7">{moment(parseInt(createdAt, 10)).format('MMM MM HH:mm')}</div>
         <div className="is-size-7">{id}</div>
         {editing ? (
           <div className={`control is-large ${isLoading ? 'is-loading' : ''}`}>
@@ -102,7 +108,8 @@ class Note extends Component {
           </div>
         ) : (
           <div className="level">
-            <p className="is-size-4">{note}</p>
+            <p className="is-size-4">{noteText}</p>
+            <p className="is-size-4">{stars[stars.length - rating]}</p>
             <div className="level-right">
               <button className="button" onClick={this.toggleEdit}>
                 Edit
@@ -123,7 +130,7 @@ Note.defaultProps = {
 };
 
 Note.propTypes = {
-  note: PropTypes.string,
+  noteText: PropTypes.string,
   userID: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   deleteNote: PropTypes.func.isRequired,

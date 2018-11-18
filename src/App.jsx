@@ -34,7 +34,8 @@ class App extends Component {
           notes {
             id
             userID
-            note
+            noteText
+            rating
             createdAt
             updatedAt
           }
@@ -62,24 +63,27 @@ class App extends Component {
   onNewNote(note) {
     const { user } = this.state;
     const { id } = user;
+    const { noteText, rating } = note;
     this.setState({ isLoading: true });
 
     const query = `
-    mutation createNote($note: String, $userID: String) {
+    mutation createNote($noteText: String, $userID: String, $rating: Int) {
       createNote(
         userID: $userID,
-        note: $note
+        noteText: $noteText,
+        rating: $rating,
       ) {
         id
         userID
-        note
+        noteText
+        rating
         createdAt
         updatedAt
       }
     }
     `;
 
-    request('/.netlify/functions/graphql', query, { userID: id, note })
+    request('/.netlify/functions/graphql', query, { userID: id, noteText, rating: parseInt(rating) })
       .then((res) => {
         const newnote = res.createNote;
         this.setState(state => ({
@@ -108,14 +112,15 @@ class App extends Component {
       updateNote(id: $nid, input: $input) {
         id
         userID
-        note
+        noteText
+        rating
         createdAt
         updatedAt
       }
     }
     `;
 
-    request('/.netlify/functions/graphql', query, { nid: id, input: { note: edits, userID: uid } })
+    request('/.netlify/functions/graphql', query, { nid: id, input: { noteText: edits, userID: uid } })
       .then((res) => {
         const updatedNote = res.updateNote;
         console.log(updatedNote);
@@ -137,7 +142,7 @@ class App extends Component {
     const query = `
     mutation deleteNote($noteID: ID) {
       deleteNote(id: $noteID) {
-        note
+        noteText
       }
     }
     `;

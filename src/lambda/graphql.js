@@ -4,47 +4,10 @@ const {
 } = require('apollo-server-lambda');
 
 const mongoose = require('mongoose');
-// const {
-//     Stitch,
-//     RemoteMongoClient,
-//     AnonymousCredential,
-// } = require('mongodb-stitch-server-sdk');
-// const connectToDatabase = require('../db');
 
-// require('dotenv').config(); TODO
+require('dotenv').config();
 
-const URI = 'mongodb+srv://dean:7rNxmsmN4m7VqeT@cluster0-2y6kf.gcp.mongodb.net/test?retryWrites=true';
-// let db = null;
-
-// if (db == null) {
-//   console.log('=> using new database connection');
-//   db = mongoose.createConnection(URI, {
-//     // Buffering means mongoose will queue up operations if it gets
-//     // disconnected from MongoDB and send them when it reconnects.
-//     // With serverless, better to fail fast if not connected.
-//     bufferCommands: false, // Disable mongoose buffering
-//     bufferMaxEntries: 0, // and MongoDB driver buffering
-//     useNewUrlParser: true,
-//   });
-//   const noteSchema = new mongoose.Schema(
-//     {
-//       userID: String,
-//       note: String,
-//     },
-//     { timestamps: true },
-//   );
-
-//   const userSchema = new mongoose.Schema({
-//     name: String,
-//   });
-//   db.model('User', userSchema);
-//   db.model('Note', noteSchema);
-// }
-
-// const User = db.model('User');
-// const Note = db.model('Note');
-
-// const { Note, User } = require('../models');
+const URI = process.env.MONGO_URI;
 
 const setupUserModel = (mongo) => { // TODO maybe combine with Notes model here
 
@@ -63,7 +26,8 @@ const setupNoteModel = (mongo) => {
 
     const noteSchema = new mongoose.Schema({
         userID: String,
-        note: String,
+        noteText: String,
+        rating: Number,
     }, {
         timestamps: true
     })
@@ -86,7 +50,7 @@ const typeDefs = gql `
     notes(userID: String): [Note]
   }
   type Mutation {
-    createNote(note: String, userID: String): Note
+    createNote(noteText: String, userID: String, rating: Int): Note
     updateNote(id: ID, input: NoteInput): Note
     deleteNote(id: ID): Note
     # createUser
@@ -101,12 +65,14 @@ const typeDefs = gql `
   type Note {
     id: ID
     userID: String
-    note: String
+    noteText: String
+    rating: Int
     createdAt: String
     updatedAt: String
   }
   input NoteInput {
-    note: String
+    noteText: String
+    rating: Int
     userID: String
   }
 `;
@@ -165,24 +131,16 @@ const server = new ApolloServer({
             });
             return {
                 ...context,
-                // callbackWaitsForEmptyEventLoop: false,
-                // conn: await client.auth.loginWithCredential(new AnonymousCredential())
                 ...setupUserModel(mongo),
                 ...setupNoteModel(mongo)
             }
         }
-        // if (!client){
-        //     client = Stitch.initializeDefaultAppClient('tastingnotes-wnnlh');
-        //     db = client.getServiceClient(RemoteMongoClient.factory, 'mongodb-atlas').db('tastingnotes');
-        // }
         console.log('==> Using existing connection.')
         return {
             ...context,
             User: mongo.model('User'),
             Note: mongo.model('Note')
         }
-
-
     },
 });
 
