@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Tastingnotes",
+  "name": "A home for all of your tasting notes",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#ad1457",
   "background_color": "#ffffff"
 }
