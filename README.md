@@ -9,6 +9,6 @@ Built with React, GraphQL and Lambda Functions (Netlify via AWS) for a static se
 - Input validation
 - User creation
 - Login with Auth
-- Domain registration
+- ~Domain registration~
 - Additional fields
 - Build a component with ReasonReact
