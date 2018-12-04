@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import '../sass/mystyles.scss'
 import Helmet from 'react-helmet';
+import { StaticQuery, graphql } from 'gatsby'
 import { request } from 'graphql-request';
 import Header from './header';
 import Notes from './notesList';
@@ -165,10 +167,15 @@ class App extends Component {
     const { notes } = user;
     return (
       <div className="">
-        <Helmet>
+          
+        <Helmet meta={[
+            { name: 'description', content: 'Sample' },
+            { name: 'keywords', content: 'sample, something' },
+          ]}>
           <meta charSet="utf-8" />
           <title>Tastingnotes</title>
-          <link rel="canonical" href="http://mysite.com/example" />
+          <html lang="en" />
+          <link rel="canonical" href="http://tastingnotes.club" />
         </Helmet>
         <Header onUserSelect={this.onUserSelect} users={users} user={user} />
 
