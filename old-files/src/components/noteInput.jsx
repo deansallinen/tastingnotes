@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const stars = [
@@ -9,20 +9,20 @@ const stars = [
   '⭐',
 ];
 
-// const Radio = props => (
-//   <input
-//     type="radio"
-//     name="rating"
-//     className="radio"
-//     onChange={props.handleChange}
-//     id={props.value}
-//     value={props.value}
-//   />
+const Radio = props => (
+  <input
+    type="radio"
+    name="rating"
+    className="radio"
+    onChange={props.handleChange}
+    id={props.value}
+    value={props.value}
+  />
 
-// );
+);
 
 
-class NoteInput extends PureComponent {
+class NoteInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,7 +49,7 @@ class NoteInput extends PureComponent {
 
   render() {
     const { noteText, rating } = this.state;
-    // const radios = [1, 2, 3, 4, 5].map(i => <Radio handleChange={this.handleChange} value={i} />);
+    const radios = [1, 2, 3, 4, 5].map(i => <Radio handleChange={this.handleChange} value={i} />);
 
     return (
       <div>
@@ -72,7 +72,7 @@ class NoteInput extends PureComponent {
                   <select id="rating-select" name="rating" value={rating} onChange={this.handleChange}>
                     {stars.map((each, index) => (
                       <option value={stars.length - index} key={stars.length - index}>{stars[index]}</option>
-                    ))}
+	    ))}
                   </select>
                 </div>
               </div>

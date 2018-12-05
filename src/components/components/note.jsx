@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -10,7 +10,7 @@ const stars = [
   '⭐',
 ];
 
-class Note extends PureComponent {
+class Note extends Component {
   constructor(props) {
     super(props);
     this.state = {
