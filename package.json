@@ -21,7 +21,8 @@
         "node-sass": "^4.10.0",
         "react": "^16.6.3",
         "react-dom": "^16.6.3",
-        "react-helmet": "^5.2.0"
+        "react-helmet": "^5.2.0",
+        "yarn": "^1.12.3"
     },
     "keywords": [
         "gatsby"
