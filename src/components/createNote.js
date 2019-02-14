@@ -244,7 +244,6 @@ const Note = () => {
   
   return (
     <div>
-      <h1>{step}</h1>
       <NoteSection step={step} prevStep={prevStep} nextStep={nextStep} >
         {NOTE_STEPS[step]}
       </NoteSection>
