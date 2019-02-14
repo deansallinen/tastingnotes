@@ -2,15 +2,22 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Header = () => (
-  <header className={`py-4 bg-purple-lighter`}>
-    <div className="container mx-auto flex justify-between ">
-      <Link to="/">
-        <div>TastingNotes</div>
-      </Link>
+  <header className={`py-4 bg-purple-dark`}>
+    <div className="container mx-auto flex justify-between items-center">
       <div>
-        <Link to="/">Home</Link>
-        <Link to="/events">Events</Link>
-        <button>Login</button>
+      <Link className='font-bold no-underline text-purple-lightest px-4' to="/">
+        TastingNotes
+      </Link>
+      <Link className='mr-4 no-underline hover:underline text-purple-lightest' to="/">Home</Link>
+      <Link className='mr-4 no-underline hover:underline text-purple-lightest' to="/events">Events</Link>
+      </div>
+      <div>
+        <Link to='/signup'>
+          <button className='mr-4 bg-purple-lightest hover:bg-white rounded shadow px-4 py-2 text-purple-dark font-bold'>Sign Up</button>
+        </Link>
+        <Link to='/login'>
+          <button className='mr-4 px-4 py-2 rounded text-purple-lightest hover:text-white font-bold'>Login</button>
+        </Link>
       </div>
     </div>
   </header>

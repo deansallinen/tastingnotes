@@ -116,3 +116,27 @@ export const INSERT_PRODUCT = gql`
 //     }
 //   }
 // `
+
+
+export const GET_ONE_PRODUCT = gql`
+query GetOneProduct($product_id: uuid!) {
+  product_by_pk(id: $product_id){
+    id
+    name
+    productType{
+      id
+      name
+    }
+    reviewsByproductId{
+      userByuserId{
+        id
+        name
+      }
+    }
+    vendor{
+      id
+      name
+    }
+  }
+}
+`

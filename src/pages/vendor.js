@@ -104,7 +104,7 @@ const Vendor = () => {
     setSelectedVendor(e.target.value)
   }
   return (
-    <Layout>
+    <div>
       <Query query={GET_VENDORS}>
         {({ loading, error, data }) => {
           if (loading) return 'Loading...'
@@ -126,7 +126,7 @@ const Vendor = () => {
       <h2>Products</h2>
       <ListProduct vendor_id={selectedVendor} />
       <InsertProduct vendor_id={selectedVendor} />
-    </Layout>
+    </div>
   )
 }
 

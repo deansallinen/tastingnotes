@@ -174,13 +174,13 @@ const VendorSelect = ({ selectedEvent }) => {
 const Page = () => {
   const [selectedEvent, setSelectedEvent] = useState('')
   return (
-    <Layout>
+    <div>
       <EventList
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
       />
       {selectedEvent && <VendorSelect selectedEvent={selectedEvent} />}
-    </Layout>
+    </div>
   )
 }
 

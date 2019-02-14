@@ -6,8 +6,12 @@ import { ApolloProvider, Query } from 'react-apollo'
 import Vendor from './pages/vendor'
 import Organizer from './pages/organizer'
 import Layout from './components/layout'
+import Note from './components/createNote'
+import Example from './components/example-form'
+import Login from './components/login'
+import Signup from './components/signup'
 
-import { GET_EVENTS, GET_ONE_EVENT } from './queries'
+import { GET_EVENTS, GET_ONE_EVENT, GET_ONE_PRODUCT } from './queries'
 
 const client = new ApolloClient({
   uri: 'https://ds-tasting-notes.herokuapp.com/v1alpha1/graphql',
@@ -45,17 +49,49 @@ const Event = ({ match }) => (
               </ul>
             </div>
           ))}
+          <Link to={`${match.url}/newnote`}>
+            <button>New note</button>
+          </Link>
+          <Route path={`${match.url}/newnote`} component={Note} />
         </div>
       )
     }}
   </Query>
 )
 
+
+
 const Events = ({ match }) => (
-  <Layout>
+  <div>
     <Route path={`${match.url}/:eventID`} component={Event} />
     <Route exact path={match.url} component={AllEvents} />
-  </Layout>
+  </div>
+)
+
+const Product = ({ match }) => (
+  <Query query={GET_ONE_PRODUCT} variables={{ product_id: match.params.productID }}>
+    {({ loading, error, data }) => {
+      if (loading) return 'Loading...'
+      if (error) return `Error: ${error.message}`
+      const { name } = data.product_by_pk
+      return (
+        <div>
+          <h1>{name}</h1>
+          <Link to={`${match.url}/newnote`}>
+            <button>New note</button>
+          </Link>
+          <Route path={`${match.url}/newnote`} component={Note} />
+        </div>
+      )
+    }}
+  </Query>
+)
+
+const Products = ({ match }) => (
+  <div>
+    <Route path={`${match.url}/:productID`} component={Product} />
+    <Route exact path={match.url} component={AllEvents} />
+  </div>
 )
 
 const AllEvents = ({ match }) => (
@@ -85,20 +121,27 @@ const AllEvents = ({ match }) => (
   </Query>
 )
 
-const Home = () => <Layout>Home</Layout>
+const Home = () => <Note />
 
 class App extends Component {
   render() {
     return (
       <Router>
         <ApolloProvider client={client}>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/events" component={Events} />
-            <Route path="/vendor" component={Vendor} />
-            <Route path="/organizer" component={Organizer} />
-            <Route path="/:type" component={AllEvents} />
-          </Switch>
+          <Layout>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/events" component={Events} />
+              <Route path="/vendor" component={Vendor} />
+              <Route path="/products" component={Products} />
+              <Route path="/organizer" component={Organizer} />
+              <Route path="/newnote" component={Note} />
+              <Route path="/example" component={Example} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+
+            </Switch>
+          </Layout>
         </ApolloProvider>
       </Router>
     )
