@@ -13,7 +13,7 @@ export const GET_EVENTS_BY_TYPE = gql`
   }
 `
 export const GET_ONE_EVENT = gql`
-  query GetOneEvent($event_id: uuid) {
+  query GetOneEvent($event_id: uuid!) {
     event_by_pk(id: $event_id) {
       id
       name
@@ -21,6 +21,9 @@ export const GET_ONE_EVENT = gql`
         vendor {
           id
           name
+          products {
+            name
+          }
         }
       }
     }
