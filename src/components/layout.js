@@ -1,24 +1,41 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'gatsby'
 
 const Header = () => (
   <header className="py-4 bg-purple-dark">
     <div className="max-w-xl mx-auto flex justify-between items-center">
       <div>
-        <Link className='font-bold no-underline text-purple-lightest pr-4' to="/">
+        <Link
+          className="font-bold no-underline text-purple-lightest pr-4"
+          to="/"
+        >
           TastingNotes
         </Link>
-        <div className='inline-block ml-4'>
-          <Link className='mr-4 no-underline hover:underline text-purple-lightest' to="/">Home</Link>
-          <Link className='mr-4 no-underline hover:underline text-purple-lightest' to="/events">Events</Link>
+        <div className="inline-block ml-4">
+          <Link
+            className="mr-4 no-underline hover:underline text-purple-lightest"
+            to="/"
+          >
+            Home
+          </Link>
+          <Link
+            className="mr-4 no-underline hover:underline text-purple-lightest"
+            to="/events"
+          >
+            Events
+          </Link>
         </div>
       </div>
       <div>
-        <Link to='/signup'>
-          <button className='mr-4 bg-white hover:bg-white rounded shadow px-4 py-2 text-purple-dark font-bold'>Sign Up</button>
+        <Link to="/signup">
+          <button className="mr-4 bg-white hover:bg-white rounded shadow px-4 py-2 text-purple-dark font-bold">
+            Sign Up
+          </button>
         </Link>
-        <Link to='/login'>
-          <button className='px-4 py-2 rounded text-purple-lightest hover:text-white font-bold'>Login</button>
+        <Link to="/login">
+          <button className="px-4 py-2 rounded text-purple-lightest hover:text-white font-bold">
+            Login
+          </button>
         </Link>
       </div>
     </div>
@@ -26,17 +43,15 @@ const Header = () => (
 )
 
 const Footer = () => (
-  <footer className=' py-6 bg-purple-darkest text-purple '>
-    <div className='max-w-lg mx-auto'>
+  <footer className=" py-6 bg-purple-darkest text-purple ">
+    <div className="max-w-lg mx-auto">
       <Link to="/vendor">
         <span className="mr-2">Vendor</span>
       </Link>
       <Link to="/organizer">
         <span className=" mr-2">Organizer</span>
       </Link>
-      <p>
-        TastingNotes is brought to you in part by:
-      </p>
+      <p>TastingNotes is brought to you in part by:</p>
       <ul>
         <li>React</li>
         <li>Tailwind</li>
