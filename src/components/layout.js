@@ -43,7 +43,7 @@ const Header = () => (
 )
 
 const Footer = () => (
-  <footer className=" py-6 bg-purple-darkest text-purple ">
+  <footer className=" py-6 bg-purple-darker text-purple ">
     <div className="max-w-lg mx-auto">
       <Link to="/vendor">
         <span className="mr-2">Vendor</span>
@@ -66,7 +66,7 @@ const Footer = () => (
 const Layout = ({ children }) => (
   <div className="flex flex-col min-h-screen font-sans">
     <Header />
-    <div className="pt-6 pb-10 bg-grey-lightest flex-1">
+    <div className="pt-6 pb-10 bg-grey-lighter flex-1">
       <div className="container mx-auto">{children}</div>
     </div>
     <Footer />

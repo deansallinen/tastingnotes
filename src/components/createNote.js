@@ -3,31 +3,32 @@
 import React, {useState} from 'react'
 // import { Mutation } from 'react-apollo'
 
-const Input = ({placeholder}) => (
+const TextInput = ({placeholder}) => (
   <input className='bg-grey-light w-full mb-4 rounded py-2 px-2' type='text' placeholder={placeholder} />
 )
 
 const SectionGeneral = () => (
   <>
     <h2 className='mb-4'>General</h2>
-    <Input placeholder='Tasting Date'  />
-    <Input placeholder='Tasting Location'  />
-    <Input placeholder='Tasting Partners'  />
-    <Input placeholder='Wine Name'  />
-    <Input placeholder='Producer'  />
-    <Input placeholder='Region/appellation'  />
-    <Input placeholder='Grape Varieties'  />
-    <Input placeholder='Vintage'  />
-    <Input placeholder='Alcohol'  />
-    <Input placeholder='Price'  />
+    <TextInput placeholder='Tasting Date'  />
+    <TextInput placeholder='Tasting Location'  />
+    <TextInput placeholder='Tasting Partners'  />
+    <TextInput placeholder='Wine Name'  />
+    <TextInput placeholder='Producer'  />
+    <TextInput placeholder='Region/appellation'  />
+    <TextInput placeholder='Grape Varieties'  />
+    <TextInput placeholder='Vintage'  />
+    <TextInput placeholder='Alcohol'  />
+    <TextInput placeholder='Price'  />
   </>
 )
 
 const SectionVisual = () => (
   <>
     <h2 className='mb-4'>Visual</h2>
+    
     <label htmlFor='color-depth'>color-depth</label>
-    <select name='color-depth'>
+    <select className='appearance-none bg-grey-lighter py-2 px-4 rounded border border-grey hover:border-grey-dark' name='color-depth'>
       <option value='watery'>watery</option>
       <option value='pale'>pale</option>
       <option value='medium'>medium</option>
@@ -71,7 +72,7 @@ const SectionAromatic = () => (
       <option value='aged'>aged</option>
     </select>
     
-    <input className='border' type='textarea' placeholder='Aromas'  />
+    <TextInput placeholder='Aromas'  />
   </>
 )
 
@@ -146,7 +147,7 @@ const SectionTaste = () => (
       <option value='powerful'>powerful</option>
     </select>
     
-    <input className='border' type='textarea' placeholder='Flavours'  />
+    <TextInput placeholder='Flavours'  />
     
     <label htmlFor='finish'>finish</label>
     <select name='finish'>
@@ -161,7 +162,7 @@ const SectionTaste = () => (
 const SectionConclusion = () => (
   <>
     <h2 className='mb-4'>Conclusion</h2>
-    <input className='border' type='textarea' placeholder='Conclusion'  />
+    <TextInput placeholder='Conclusion'  />
 
     <label htmlFor='style'>style</label>
     <select name='style'>
@@ -183,6 +184,14 @@ const SectionConclusion = () => (
       <input type="radio" id="three"
        name="rating" value="3"/>
       <label for="three">3</label>
+      
+      <input type="radio" id="four"
+       name="rating" value="4"/>
+      <label for="three">4</label>
+      
+      <input type="radio" id="five"
+       name="rating" value="5"/>
+      <label for="three">5</label>
     </div>
   </>
 )
@@ -190,7 +199,7 @@ const SectionConclusion = () => (
 const SectionFoodPairing = () => (
   <>
     <h2 className='mb-4'>Food Pairing</h2>
-    <input className='border' type='text' placeholder='Food'  />
+    <TextInput placeholder='Food'  />
     <p>pairing-match</p>
     <div>
       <input type="radio" id="one"
@@ -213,8 +222,8 @@ const SectionFoodPairing = () => (
 )
 
 const NoteSection = ({children, step, prevStep, nextStep}) => (
-  <section className='max-w-md mx-auto mb-4 py-6 px-8 rounded bg-white '>
-    <div>
+  <section className='max-w-md mx-auto mb-4 py-6 px-8 rounded bg-white shadow'>
+    <div className='flex flex-col'>
       {children}
     </div>
     <div className='mt-4 flex justify-between'>
